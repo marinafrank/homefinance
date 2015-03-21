@@ -1,0 +1,1 @@
+alter table HOMEFINANCE.FINANCE_OPERATIONS add IS_STORNO NUMBER(1) default 0 not null;

@@ -11,7 +11,8 @@ create table FINANCE_OPERATIONS
   BALANCE_ID    NUMBER(2) not null,
   OP_DIRECTION  NUMBER(1) not null,
   ACCOUNT_ID    NUMBER(3) not null,
-  AMOUNT        NUMBER(15,2) not null
+  AMOUNT        NUMBER(15,2) not null,
+  IS_STORNO     NUMBER(1)    default 0 not NULL
 )
 ;
 -- Create/Recreate primary, unique and foreign key constraints 
