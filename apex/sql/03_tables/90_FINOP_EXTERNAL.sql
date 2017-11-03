@@ -1,0 +1,32 @@
+create table finop_external
+( OP_DATE DATE
+, AMOUNT VARCHAR2(4000 CHAR)
+, BALANCE_ID NUMBER(2, 0) 
+, CONTRACTOR_ID NUMBER 
+, ACCOUNT_ID NUMBER(3, 0) 
+, COMMENTS VARCHAR2(4000 CHAR) 
+, OP_DIRECTION NUMBER(1, 0) 
+, CURRENCY_ID NUMBER(1, 0) 
+)
+ORGANIZATION EXTERNAL
+(
+TYPE oracle_loader
+DEFAULT DIRECTORY hf_incoming
+ACCESS PARAMETERS 
+(
+  RECORDS DELIMITED BY NEWLINE
+  FIELDS TERMINATED BY "," optionally enclosed by '"'
+ missing field values are null 
+ ( OP_DATE         date 'DD.MM.YYYY'
+ , AMOUNT
+ , BALANCE_ID      
+ , CONTRACTOR_ID   
+ , ACCOUNT_ID      
+ , COMMENTS        
+ , OP_DIRECTION    
+ , CURRENCY_ID     
+ )
+)
+LOCATION ('Expences_Transactions.csv')
+)
+REJECT LIMIT UNLIMITED;

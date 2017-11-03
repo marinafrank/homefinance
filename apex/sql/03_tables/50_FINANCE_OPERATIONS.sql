@@ -38,3 +38,5 @@ alter table FINANCE_OPERATIONS
 alter table FINANCE_OPERATIONS
   add constraint FIN_OP_DIR_FK foreign key (OP_DIRECTION)
   references DIRECTION_LOOKUP (ID);
+
+exec dbms_errlog.CREATE_ERROR_LOG ('FINANCE_OPERATIONS','FINANCE_OPERATIONS_ERR$')

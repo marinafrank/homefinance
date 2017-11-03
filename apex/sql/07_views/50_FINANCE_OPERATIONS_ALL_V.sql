@@ -25,7 +25,7 @@ where ba.id=f.account_id
   and cr.id=f.cur_rate_id
   and cn.id(+)=f.contractor_id
 UNION ALL
-SELECT bt.id,2,bt.tr_date,'Перевод'
+SELECT bt.id,2,bt.tr_date,'РџРµСЂРµРІРѕРґ'
      , decode(bt.op_direction,1,bt.amount,0) EXP
      , decode(bt.op_direction,2,bt.amount,0) inc
      , NULL comments
