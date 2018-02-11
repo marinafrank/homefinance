@@ -20,6 +20,9 @@ alter table FINANCE_OPERATIONS
   add constraint FINANCE_OPERATIONS_PK primary key (ID);
 alter table FINANCE_OPERATIONS
   add constraint FIN_OP_UK unique (OP_DATE, BALANCE_ID, ACCOUNT_ID, CONTRACTOR_ID, OP_DIRECTION);
+
+alter table FINANCE_OPERATIONS
+  add constraint date_chk check (OP_DATE > date '1984-11-16');
 alter table FINANCE_OPERATIONS
   add constraint FIN_OP_ACC_FK foreign key (ACCOUNT_ID)
   references BALANCE_ACCOUNT (ID);

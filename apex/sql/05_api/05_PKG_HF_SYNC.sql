@@ -10,14 +10,11 @@ create or replace package HF_SYNC is
  -- dataSource: EXTERNALTAB, APEX
  PROCEDURE prepare_staging( dataSource varchar2, fieldSep varchar2 := ',', ops_staged out number);
  -- merge staging data into permanent table
- PROCEDURE import_staging( ops_imported out number, ops_failed out number);
+ PROCEDURE import_staging( ops_imported out number, ops_failed out number, ops_noacc out number);
 
 end HF_SYNC;
 /
 create or replace package body HF_SYNC is
-
-  -- Default account if missing
-  c_dflt_account_id finance_operations.ACCOUNT_ID%TYPE := 62;
 PROCEDURE download_xml AS
         v_mime  VARCHAR2(48):= 'text\xml';
         v_length  NUMBER;
@@ -62,9 +59,11 @@ begin
 end;
 
 PROCEDURE prepare_staging( dataSource varchar2, fieldSep varchar2 := ',', ops_staged out number) IS
-
+  pragma autonomous_transaction;
 BEGIN
+  delete FINANCE_OPERATIONS_ERR$;
   delete finop_staging;
+  ops_staged := sql%rowcount;
   IF dataSource = 'EXTERNALTAB' THEN
     -- todo (re)create exttab
     insert into finop_staging select * from finop_external;
@@ -72,11 +71,12 @@ BEGIN
   ELSIF dataSource = 'APEX' THEN
     null;
   END IF;
+  commit;
 END prepare_staging;
 
-PROCEDURE import_staging( ops_imported out number, ops_failed out number) IS
+PROCEDURE import_staging( ops_imported out number, ops_failed out number, ops_noacc out number) IS
 BEGIN
-  delete FINANCE_OPERATIONS_ERR$;
+  --delete FINANCE_OPERATIONS_ERR$;
   ops_imported := 0;
   -- merge staging records: insert non-existing, update existing.
   -- if default account found, save old data in comments for manual check
@@ -91,7 +91,7 @@ BEGIN
   when matched then
   update set d.amount = s.amount
    -- string overflow is not handled intentionally to be propagated to caller with rollback  
-   , d.comments = case when d.ACCOUNT_ID=c_dflt_account_id and s.ACCOUNT_ID=c_dflt_account_id then
+   , d.comments = case when d.ACCOUNT_ID=HF_FORMATDATA.dflt_account_id and s.ACCOUNT_ID=HF_FORMATDATA.dflt_account_id then
        'WARN: possible data loss new amount:'||s.amount|| ' old amount:'||d.amount||
        ' newCommment:'||s.comments||' oldComment:'||d.comments
      else s.comments end
@@ -127,6 +127,12 @@ BEGIN
   IF ops_failed > 0 then
     ops_imported := 0;
     rollback;
+  ELSE
+    select count(1) into ops_noacc
+      from finance_operations
+     where op_date >= (select min(op_date) from finop_staging)
+       and account_id = HF_FORMATDATA.dflt_account_id
+     order by op_date;
   END IF;
 
 END import_staging;
