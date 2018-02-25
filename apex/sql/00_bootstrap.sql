@@ -3,3 +3,5 @@ grant resource to homefinance;
 
 create or replace directory hf_incoming as 'd:\ORACLE\hf';
 grant read,write on directory hf_incoming to homefinance;
+
+@@00_setup/apexinst_setup.sql
