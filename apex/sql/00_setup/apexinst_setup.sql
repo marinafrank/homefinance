@@ -10,9 +10,10 @@ BEGIN
   COMMIT;
 END;
 /
+COLUMN orig_schema new_value orig_schema
 COLUMN apex_schema new_value apex_schema
 
-SELECT SCHEMA apex_schema
+SELECT SCHEMA apex_schema, sys_context('userenv','current_schema') orig_schema
   FROM dba_registry
  WHERE comp_id = 'APEX';
 
@@ -89,3 +90,4 @@ EXCEPTION WHEN no_data_found THEN
 end;
 /
 prompt
+ALTER SESSION SET CURRENT_SCHEMA=&orig_schema;
