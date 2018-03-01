@@ -27,7 +27,7 @@ prompt APPLICATION 101 - HOMEFINANCE
 -- Application Export:
 --   Application:     101
 --   Name:            HOMEFINANCE
---   Date and Time:   15:21 Thursday March 1, 2018
+--   Date and Time:   15:38 Thursday March 1, 2018
 --   Exported By:     M
 --   Flashback:       0
 --   Export Type:     Application Export
@@ -117,7 +117,7 @@ wwv_flow_api.create_flow(
 ,p_csv_encoding=>'Y'
 ,p_auto_time_zone=>'N'
 ,p_last_updated_by=>'M'
-,p_last_upd_yyyymmddhh24miss=>'20180301152049'
+,p_last_upd_yyyymmddhh24miss=>'20180301153758'
 ,p_file_prefix => nvl(wwv_flow_application_install.get_static_app_file_prefix,'')
 ,p_files_version=>4
 ,p_ui_type_name => null
@@ -3060,7 +3060,7 @@ wwv_flow_api.create_page(
 ,p_protection_level=>'C'
 ,p_cache_mode=>'NOCACHE'
 ,p_last_updated_by=>'M'
-,p_last_upd_yyyymmddhh24miss=>'20180301152049'
+,p_last_upd_yyyymmddhh24miss=>'20180301153147'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(1896772040574195)
@@ -3189,7 +3189,7 @@ wwv_flow_api.create_page_item(
 ,p_source_type=>'DB_COLUMN'
 ,p_display_as=>'NATIVE_HIDDEN'
 ,p_protection_level=>'S'
-,p_attribute_01=>'Y'
+,p_attribute_01=>'N'
 );
 wwv_flow_api.create_page_item(
  p_id=>wwv_flow_api.id(1900141461574201)
@@ -3633,7 +3633,7 @@ wwv_flow_api.create_page(
 ,p_page_is_public_y_n=>'N'
 ,p_cache_mode=>'NOCACHE'
 ,p_last_updated_by=>'M'
-,p_last_upd_yyyymmddhh24miss=>'20180225000559'
+,p_last_upd_yyyymmddhh24miss=>'20180301153758'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(1964767857254585)
@@ -3669,12 +3669,11 @@ wwv_flow_api.create_page_plug(
 ,p_plug_query_no_data_found=>'nothing found'
 ,p_attribute_01=>'SEARCH:INSET'
 ,p_attribute_02=>'DISPLAYCOL'
-,p_attribute_06=>'COMMENTS'
 ,p_attribute_08=>'AMOUNT'
 ,p_attribute_16=>'f?p=&APP_ID.:2:&SESSION.::&DEBUG.:RP,2:P2_ID:&ID.'
 ,p_attribute_18=>'SERVER_LIKE_IGNORE'
 ,p_attribute_19=>'DISPLAYCOL'
-,p_attribute_20=>'&APP_DATE_TIME_FORMAT.'
+,p_attribute_20=>'e.g. YYYY-MM-DD'
 );
 end;
 /
