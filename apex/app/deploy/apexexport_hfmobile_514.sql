@@ -27,7 +27,7 @@ prompt APPLICATION 101 - HOMEFINANCE
 -- Application Export:
 --   Application:     101
 --   Name:            HOMEFINANCE
---   Date and Time:   00:21 Sunday February 25, 2018
+--   Date and Time:   15:21 Thursday March 1, 2018
 --   Exported By:     M
 --   Flashback:       0
 --   Export Type:     Application Export
@@ -41,8 +41,8 @@ prompt APPLICATION 101 - HOMEFINANCE
 --     Computations:             1
 --     Processes:               10
 --     Regions:                 10
---     Buttons:                 12
---     Dynamic Actions:          1
+--     Buttons:                 13
+--     Dynamic Actions:          2
 --   Shared Components:
 --     Logic:
 --       Items:                  1
@@ -117,7 +117,7 @@ wwv_flow_api.create_flow(
 ,p_csv_encoding=>'Y'
 ,p_auto_time_zone=>'N'
 ,p_last_updated_by=>'M'
-,p_last_upd_yyyymmddhh24miss=>'20180225000559'
+,p_last_upd_yyyymmddhh24miss=>'20180301152049'
 ,p_file_prefix => nvl(wwv_flow_application_install.get_static_app_file_prefix,'')
 ,p_files_version=>4
 ,p_ui_type_name => null
@@ -3060,7 +3060,7 @@ wwv_flow_api.create_page(
 ,p_protection_level=>'C'
 ,p_cache_mode=>'NOCACHE'
 ,p_last_updated_by=>'M'
-,p_last_upd_yyyymmddhh24miss=>'20180224004733'
+,p_last_upd_yyyymmddhh24miss=>'20180301152049'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(1896772040574195)
@@ -3074,6 +3074,23 @@ wwv_flow_api.create_page_plug(
 ,p_attribute_01=>'N'
 ,p_attribute_02=>'TEXT'
 ,p_attribute_03=>'Y'
+);
+wwv_flow_api.create_page_button(
+ p_id=>wwv_flow_api.id(2221812066708741)
+,p_button_sequence=>31
+,p_button_plug_id=>wwv_flow_api.id(1896772040574195)
+,p_button_name=>'calcAmount'
+,p_button_action=>'DEFINED_BY_DA'
+,p_button_template_options=>'#DEFAULT#:ui-btn-icon-notext'
+,p_button_template_id=>wwv_flow_api.id(1865359927289582)
+,p_button_image_alt=>'calc'
+,p_button_position=>'BODY'
+,p_button_execute_validations=>'N'
+,p_warn_on_unsaved_changes=>null
+,p_icon_css_classes=>'fa fa-calculator'
+,p_grid_new_grid=>false
+,p_grid_new_row=>'N'
+,p_grid_new_column=>'Y'
 );
 wwv_flow_api.create_page_button(
  p_id=>wwv_flow_api.id(1897483534574196)
@@ -3135,20 +3152,32 @@ wwv_flow_api.create_page_button(
 );
 wwv_flow_api.create_page_branch(
  p_id=>wwv_flow_api.id(1899328341574199)
+,p_branch_name=>'Go To Page 2'
 ,p_branch_action=>'f?p=&APP_ID.:2:&SESSION.&success_msg=#SUCCESS_MSG#'
 ,p_branch_point=>'AFTER_PROCESSING'
 ,p_branch_type=>'REDIRECT_URL'
+,p_branch_when_button_id=>wwv_flow_api.id(1897295469574196)
 ,p_branch_sequence=>1
+);
+wwv_flow_api.create_page_branch(
+ p_id=>wwv_flow_api.id(2222332301708746)
+,p_branch_name=>'Go home on del'
+,p_branch_action=>'f?p=&APP_ID.:1:&SESSION.::&DEBUG.:RP::&success_msg=#SUCCESS_MSG#'
+,p_branch_point=>'AFTER_PROCESSING'
+,p_branch_type=>'REDIRECT_URL'
+,p_branch_when_button_id=>wwv_flow_api.id(1897341582574196)
+,p_branch_sequence=>11
 );
 wwv_flow_api.create_page_item(
  p_id=>wwv_flow_api.id(1876585911342927)
 ,p_name=>'P2_YESTERDAY'
 ,p_item_sequence=>1
 ,p_item_plug_id=>wwv_flow_api.id(1896772040574195)
+,p_use_cache_before_default=>'NO'
 ,p_source=>'sysdate-1'
 ,p_source_type=>'FUNCTION'
 ,p_display_as=>'NATIVE_HIDDEN'
-,p_attribute_01=>'Y'
+,p_attribute_01=>'N'
 );
 wwv_flow_api.create_page_item(
  p_id=>wwv_flow_api.id(1899774855574200)
@@ -3226,7 +3255,6 @@ wwv_flow_api.create_page_item(
 ' order by 1'))
 ,p_cHeight=>1
 ,p_begin_on_new_line=>'N'
-,p_grid_column=>2
 ,p_field_template=>wwv_flow_api.id(1865293153289581)
 ,p_item_template_options=>'#DEFAULT#'
 ,p_lov_display_extra=>'YES'
@@ -3374,20 +3402,49 @@ wwv_flow_api.create_page_item(
 ,p_prompt=>'Amount'
 ,p_source=>'AMOUNT'
 ,p_source_type=>'DB_COLUMN'
-,p_display_as=>'NATIVE_NUMBER_FIELD'
+,p_display_as=>'NATIVE_TEXT_FIELD'
 ,p_cSize=>32
 ,p_cMaxlength=>255
 ,p_new_grid=>true
 ,p_field_template=>wwv_flow_api.id(1865293153289581)
 ,p_item_template_options=>'#DEFAULT#'
-,p_attribute_03=>'right'
+,p_attribute_01=>'N'
+,p_attribute_02=>'N'
+,p_attribute_04=>'TEXT'
+,p_attribute_05=>'BOTH'
 );
 wwv_flow_api.create_page_computation(
  p_id=>wwv_flow_api.id(1876448806342926)
 ,p_computation_sequence=>10
 ,p_computation_item=>'P2_AMOUNT'
 ,p_computation_type=>'PLSQL_EXPRESSION'
-,p_computation=>'replace(:P2_AMOUNT,'','',''.'')'
+,p_computation=>'hf_formatdata.calcmath( :P2_AMOUNT)'
+);
+wwv_flow_api.create_page_da_event(
+ p_id=>wwv_flow_api.id(2222145710708744)
+,p_name=>'calc amount'
+,p_event_sequence=>10
+,p_triggering_element_type=>'BUTTON'
+,p_triggering_button_id=>wwv_flow_api.id(2221812066708741)
+,p_condition_element=>'P2_AMOUNT'
+,p_triggering_condition_type=>'NOT_NULL'
+,p_bind_type=>'bind'
+,p_bind_event_type=>'click'
+);
+wwv_flow_api.create_page_da_action(
+ p_id=>wwv_flow_api.id(2222247433708745)
+,p_event_id=>wwv_flow_api.id(2222145710708744)
+,p_event_result=>'TRUE'
+,p_action_sequence=>10
+,p_execute_on_page_init=>'Y'
+,p_action=>'NATIVE_SET_VALUE'
+,p_affected_elements_type=>'ITEM'
+,p_affected_elements=>'P2_AMOUNT'
+,p_attribute_01=>'JAVASCRIPT_EXPRESSION'
+,p_attribute_05=>'eval($v(''P2_AMOUNT'').replace(/=/g, "").replace(/,/g,".")).toFixed(2)'
+,p_attribute_09=>'N'
+,p_stop_execution_on_error=>'Y'
+,p_wait_for_result=>'Y'
 );
 wwv_flow_api.create_page_process(
  p_id=>wwv_flow_api.id(1906119161574212)
@@ -3410,7 +3467,7 @@ wwv_flow_api.create_page_process(
 ,p_attribute_04=>'ID'
 ,p_attribute_11=>'I:U:D'
 ,p_error_display_location=>'INLINE_IN_NOTIFICATION'
-,p_process_success_message=>'Action Processed.'
+,p_process_success_message=>'Transaction &REQUEST. processed.'
 );
 wwv_flow_api.create_page_process(
  p_id=>wwv_flow_api.id(1906993610574213)
