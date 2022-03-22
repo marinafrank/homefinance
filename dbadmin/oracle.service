@@ -1,0 +1,23 @@
+[Unit]
+Description=Oracle Docker container
+After=docker.service
+Requires=docker.service
+
+[Service]
+TimeoutStartSec=5
+Restart=always
+ExecStartPre=-/usr/bin/docker rm -f oracle21
+#    -u '54321'
+ExecStart=/usr/bin/docker run --name oracle21 \
+    --shm-size=1300m \
+    --network=docker_backend \
+    -p 1521:1521 \
+    --hostname=oracle21 \
+    -e ORACLE_PASSWORD=Berg40 \
+    -v /data/oracle/oradata21:/opt/oracle/oradata \
+    gvenzl/oracle-xe:21
+ExecStop=/usr/bin/docker rm -f oracle21
+#    -v /data/oracle/diag:/u01/app/oracle/diag
+
+[Install]
+WantedBy=multi-user.target

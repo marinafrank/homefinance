@@ -1,0 +1,35 @@
+[Unit]
+Description=Oracle REST Data Service
+After=oracle21.service
+Requires=docker.service
+
+[Service]
+TimeoutStartSec=15
+Restart=on-failure
+ExecStartPre=-/usr/bin/docker rm -f ords21
+ExecStartPre=/usr/bin/docker create --name ords21 \
+ --network=docker_backend \
+ -p 127.0.0.1:9080:8080 \
+ -v /data/tomcat:/u01/config/instance1 \
+ -e "DB_HOSTNAME=oracle21" \
+ -e "DB_PORT=1521" \
+ -e "DB_SERVICE=HF" \
+ -e "APEX_PUBLIC_USER_PASSWORD=ertdfg" \
+ -e "APEX_TABLESPACE=APEX_212000" \
+ -e "TEMP_TABLESPACE=TEMP" \
+ -e "APEX_LISTENER_PASSWORD=ertdfg" \
+ -e "APEX_REST_PASSWORD=ertdfg" \
+ -e "PUBLIC_PASSWORD=ertdfg" \
+ -e "SYS_PASSWORD=Berg40" \
+ -e "KEYSTORE_PASSWORD=ertdfg" \
+ -e "AJP_SECRET=ertdfg" \
+ -e "AJP_ADDRESS=0.0.0.0" \
+ -e "APEX_IMAGES_REFRESH=false" \
+ -e "PROXY_IPS=127.0.0.1" \
+ ol8_ords:latest
+ExecStartPre=/usr/bin/docker network connect bridge ords21
+ExecStart=/usr/bin/docker start -a ords21
+ExecStop=/usr/bin/docker rm -f ords21
+
+[Install]
+WantedBy=multi-user.target
