@@ -37,7 +37,8 @@ server {
     location = /50x.html {
         root   /usr/share/nginx/html;
     }
-
+    # for uploading APEX export files
+    client_max_body_size 5M;
     # proxy the PHP scripts to Tomcat listening on 127.0.0.1:9080
     #
     location / {

@@ -4,7 +4,7 @@ SELECT
     ident
 FROM
     accounts_hierarch;
--- balance    
+-- balance
 SELECT
     name,
     id

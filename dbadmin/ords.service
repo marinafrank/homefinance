@@ -6,9 +6,10 @@ Requires=docker.service
 [Service]
 TimeoutStartSec=15
 Restart=on-failure
+ExecStartPre=-/usr/bin/docker network disconnect -f bridge ords21
+ExecStartPre=-/usr/bin/docker network disconnect -f docker_backend ords21
 ExecStartPre=-/usr/bin/docker rm -f ords21
 ExecStartPre=/usr/bin/docker create --name ords21 \
- --network=docker_backend \
  -p 127.0.0.1:9080:8080 \
  -v /data/tomcat:/u01/config/instance1 \
  -e "DB_HOSTNAME=oracle21" \
@@ -27,9 +28,8 @@ ExecStartPre=/usr/bin/docker create --name ords21 \
  -e "APEX_IMAGES_REFRESH=false" \
  -e "PROXY_IPS=127.0.0.1" \
  ol8_ords:latest
-ExecStartPre=/usr/bin/docker network connect bridge ords21
+ExecStartPre=/usr/bin/docker network connect docker_backend ords21
 ExecStart=/usr/bin/docker start -a ords21
-ExecStop=/usr/bin/docker rm -f ords21
 
 [Install]
 WantedBy=multi-user.target

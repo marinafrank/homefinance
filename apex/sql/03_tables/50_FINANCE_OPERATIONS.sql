@@ -15,7 +15,7 @@ create table FINANCE_OPERATIONS
   IS_STORNO     NUMBER(1)    default 0 not NULL
 )
 ;
--- Create/Recreate primary, unique and foreign key constraints 
+-- Create/Recreate primary, unique and foreign key constraints
 alter table FINANCE_OPERATIONS
   add constraint FINANCE_OPERATIONS_PK primary key (ID);
 alter table FINANCE_OPERATIONS
@@ -43,3 +43,26 @@ alter table FINANCE_OPERATIONS
   references DIRECTION_LOOKUP (ID);
 
 exec dbms_errlog.CREATE_ERROR_LOG ('FINANCE_OPERATIONS','FINANCE_OPERATIONS_ERR$')
+
+TRIGGER "HOMEFINANCE".FINANCE_OPERATIONS_BIU_ACC_R
+  before insert or update of account_id on FINANCE_OPERATIONS
+  for each row
+begin
+  if not is_leaf_account(:new.account_id) then
+    raise_application_error(-20002,'Нельзя назначить обобщающий счет');
+  end if;
+
+  hf_fin_oper.validate_direction(:NEW.account_id,:NEW.op_direction);
+
+  if :new."ID" is null then
+    if inserting then
+      select "FINANCE_OPERATIONS_SEQ".nextval into :new."ID" from dual;
+    end if;
+  end if;
+
+  if :new.CUR_RATE_ID is null AND :NEW.CURRENCY_ID=1 then
+   :new.CUR_RATE_ID:=1;
+  end if;
+exception
+when others then raise;
+end;

@@ -14,8 +14,19 @@ ALTER TABLE balance_account
 ALTER TABLE balance_account
   ADD CONSTRAINT bal_acc_dir_fk FOREIGN KEY (op_direction)
   REFERENCES direction_lookup (ID);
-  
+
 CREATE SEQUENCE account_seq
 START WITH 1
 INCREMENT BY 1
 CACHE 2;
+
+TRIGGER "HOMEFINANCE".balance_account_BIR
+  before insert on balance_account
+  for each row
+begin
+  if :new."ID" is null then
+    select ACCOUNT_SEQ.nextval into :new."ID" from dual;
+  end if;
+exception
+  when others then raise;
+end;
